@@ -2,7 +2,7 @@ import argparse
 import logging
 import getpass
 import sys
-import time
+import os
 
 from .udemy_dl import UdemyDL, UdemyDLException
 from . import __version__, __title__
@@ -37,18 +37,6 @@ class Cli:
             action='store'
         )
         parser.add_argument(
-            '--lecture-start',
-            help='Lecture to start at (default is 1)',
-            default=1,
-            action='store'
-        )
-        parser.add_argument(
-            '--lecture-end',
-            help='Lecture to end at (default is last)',
-            default=None,
-            action='store'
-        )
-        parser.add_argument(
             '-o', '--output-dir',
             help='Output directory',
             default=None,
@@ -72,17 +60,33 @@ class Cli:
             username = input("Username / Email : ")
 
         if not password:
-            password = getpass.getpass()
+            password = getpass.getpass(prompt='Password: ')
+
+        link = args['link'].rstrip('/')
+
+        if args['output_dir']:            
+            output_dir = os.path.normpath(args['output_dir'])
+        else:            
+            output_dir = os.path.join(".", link.rsplit('/', 1)[1])
+
+        print('output dir: ', output_dir)
+        print(link)
 
         try:
-            with UdemyDL(args['link'], username, password) as udl:
-                time.sleep(5)
-        except UdemyDLException as lae:
-            print(lae.args[0])
+            with UdemyDL(args['link'], username, password) as dl:
+                dl.analyze()
+        except UdemyDLException as e:
+            print(e.args[0])
 
         except KeyboardInterrupt:
-            print("User interrupted the process, exiting...")
+            logger.error("User interrupted the process, exiting...")
 
+        except Exception as e:
+            logger.error('Unknown Exception')
+            logger.exception(e)
+            logger.info(
+                'some text'
+            )
         finally:
             sys.exit(1)
 
