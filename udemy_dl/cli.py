@@ -90,6 +90,3 @@ class Cli:
 
 def main():
     Cli().main()
-
-if __name__ == "__main__":
-    main()
