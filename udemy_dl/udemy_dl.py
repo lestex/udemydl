@@ -28,6 +28,7 @@ class UdemyDL:
         return self
     
     def __exit__(self, *args):
+        print(self.course_id)
         self.logout()
 
     def analyze(self):
