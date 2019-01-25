@@ -69,14 +69,11 @@ class Cli:
         else:            
             output_dir = os.path.join(".", link.rsplit('/', 1)[1])
 
-        print('output dir: ', output_dir)
-        print(link)
-
         try:
-            with UdemyDL(args['link'], username, password) as dl:
+            with UdemyDL(link, username, password, output_dir) as dl:
                 dl.analyze()
         except UdemyDLException as e:
-            print(e.args[0])
+            print(e)
 
         except KeyboardInterrupt:
             logger.error("User interrupted the process, exiting...")
