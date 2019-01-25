@@ -20,4 +20,4 @@ u:
 clean:
 	@rm -rf build dist udemy_dl.egg-info
 
-all:	u b a
+all:	u b i
