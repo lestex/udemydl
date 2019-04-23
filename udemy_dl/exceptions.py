@@ -1,0 +1,2 @@
+class UdemyException(Exception):
+    pass
