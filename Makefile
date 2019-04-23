@@ -2,6 +2,10 @@
 
 default: test
 
+shell:
+	pipenv --python 3.6.4
+	pipenv shell
+
 install:
 	pipenv install --dev --skip-lock
 
@@ -18,6 +22,6 @@ u:
 	pip uninstall -y udemy-dl
 
 clean:
-	@rm -rf build dist udemy_dl.egg-info
+	@rm -rf build dist udemy_dl.egg-info .pytest_cache
 
 all:	u b i
