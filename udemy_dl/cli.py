@@ -1,72 +1,55 @@
-import argparse
-import logging
-import getpass
-import sys
-import time
 
-from .udemy_dl import UdemyDL, UdemyDLException
-from . import __version__, __title__
+from . import __title__
+from .argparser import parser
+from .utils import sys_info
+from .udemy import UdemyDownload
+from .exceptions import UdemyException
+import getpass
+import logging
+import os
+import time
+import sys
 
 logger = logging.getLogger(__title__)
 
 class Cli:
+
+    LOG_FORMAT_CONSOLE = '%(levelname)-8s %(message)s'
+
     def __init__(self):
-        self.argparser = self.create_argparser()
+        self.argparser = parser
 
+    def __get_log_handler(self, error_level, formatter,
+                    handler, handler_args={}):
+        log_handler = handler(**handler_args)
+        log_handler.setLevel(error_level)
+        log_handler.setFormatter(
+            logging.Formatter(formatter)
+        )
+        return log_handler
 
-    def create_argparser(self):
-        parser = argparse.ArgumentParser(
-            description='Download all videos for a udemy course',
-            prog=__title__
+    def __get_console_log_handler(self, error_level):
+        return self.__get_log_handler(
+            error_level, self.LOG_FORMAT_CONSOLE,
+            logging.StreamHandler
         )
-        parser.add_argument(
-            'link', 
-            help='Link for udemy course',
-            action='store'
-        )
-        parser.add_argument(
-            '-u', '--username',
-            help='Username/Email',
-            default=None,
-            action='store'
-        )
-        parser.add_argument(
-            '-p', '--password',
-            help='Password',
-            default=None,
-            action='store'
-        )
-        parser.add_argument(
-            '--lecture-start',
-            help='Lecture to start at (default is 1)',
-            default=1,
-            action='store'
-        )
-        parser.add_argument(
-            '--lecture-end',
-            help='Lecture to end at (default is last)',
-            default=None,
-            action='store'
-        )
-        parser.add_argument(
-            '-o', '--output-dir',
-            help='Output directory',
-            default=None,
-            action='store'
-        )
-        parser.add_argument(
-            '-v', '--version',
-            help='Display the version of udemy-dl and exit',
-            action='version',
-            version='%(prog)s {version}'.format(version=__version__)
-        )
-        return parser
 
-    def main(self):
+    def __init_logger(self, error_level=logging.INFO):
+        logger.setLevel(error_level)
+        logger.addHandler(self.__get_console_log_handler(error_level))
+    
+    def __generate_sys_info_log(self, sys_info):
+        logger.debug('Running on:')
+        logger.debug('Python: {}'.format(sys_info['python']))
+        logger.debug('Platform: {}'.format(sys_info['platform']))
+        logger.debug('OS: {}'.format(sys_info['os']))
+
+    def run(self):
         args = vars(self.argparser.parse_args())
 
         username = args['username']
         password = args['password']
+        debug = args['debug']
         
         if not username:
             username = input("Username / Email : ")
@@ -74,21 +57,27 @@ class Cli:
         if not password:
             password = getpass.getpass()
 
+        output_folder = os.path.abspath(
+            os.path.expanduser(args['output']) if args['output'] else ''
+        )
+
+        sys_information = sys_info()
+
+        if debug:
+            self.__init_logger(logging.DEBUG)
+            self.__generate_sys_info_log(sys_information)
+        else:
+            self.__init_logger()        
         try:
-            with UdemyDL(args['link'], username, password) as udl:
-                time.sleep(5)
-        except UdemyDLException as lae:
-            print(lae.args[0])
-
+            with UdemyDownload(args['link'], username, password, output_folder) as ud:                
+                ud.analyze()
+                ud.download()
+        except UdemyException as ue:
+            logger.error(ue.args[0])
         except KeyboardInterrupt:
-            print("User interrupted the process, exiting...")
-
+            logger.error("User interrupted the process, exiting...")
+        except Exception as e:
+            logger.error('Unknown Exception')
+            logger.exception(e)
         finally:
             sys.exit(1)
-
-
-def main():
-    Cli().main()
-
-if __name__ == "__main__":
-    main()
