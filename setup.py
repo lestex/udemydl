@@ -7,12 +7,12 @@ from setuptools import setup
 requirements = [pkg.split('=')[0] for pkg in open('requirements.txt').readlines()]
 
 description = 'Download videos from Udemy for personal offline use'
-try:
-    subprocess.call(["pandoc", "README.md", "-f", "markdown", "-t", "rst", "-o", "README.rst"])
-    long_description = open("README.rst").read()
-except OSError:
-    print("Pandoc not installed")
-    long_description = description
+# try:
+#     subprocess.call(["pandoc", "README.md", "-f", "markdown", "-t", "rst", "-o", "README.rst"])
+#     long_description = open("README.rst").read()
+# except OSError:
+#     print("Pandoc not installed")
+long_description = description
 
 classifiers = ['Environment :: Console',
                'Programming Language :: Python :: 2',
@@ -33,7 +33,7 @@ setup(name='udemy-dl',
       classifiers=classifiers,
       entry_points={
         'console_scripts': [
-            '{}=udemy_dl.cli:main'.format('udemy-dl')
+            '{}=udemy_dl.__main__:main'.format('udemy-dl')
         ]
       }
     )
