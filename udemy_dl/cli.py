@@ -22,9 +22,7 @@ class Cli:
                     handler, handler_args={}):
         log_handler = handler(**handler_args)
         log_handler.setLevel(error_level)
-        log_handler.setFormatter(
-            logging.Formatter(formatter)
-        )
+        log_handler.setFormatter(logging.Formatter(formatter))
         return log_handler
 
     def __get_console_log_handler(self, error_level):
@@ -50,6 +48,7 @@ class Cli:
         username = args['username']
         password = args['password']
         debug = args['debug']
+        quality = args['video_quality']
         
         if not username:
             username = input("Username / Email : ")
@@ -65,7 +64,7 @@ class Cli:
         else:
             self.__init_logger()
 
-        if args['output']:            
+        if args['output']:
             output_dest = os.path.normpath(args['output'])            
         else:
             course_slug = link.rsplit('/', 1)[1]
@@ -73,9 +72,10 @@ class Cli:
 
         output_dir = os.path.abspath(output_dest)        
         logger.debug('Downloading course to: %s', output_dir)
+        logger.debug('Downloading with quality: %s', quality)
 
         try:
-            with UdemyDownload(link, username, password, output_dir) as ud:                
+            with UdemyDownload(link, username, password, output_dir, quality) as ud:                
                 ud.analyze()
                 ud.download()
         except UdemyException as ue:
