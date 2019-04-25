@@ -35,3 +35,9 @@ parser.add_argument(
     default=None,
     action='store'
 )
+parser.add_argument(
+    '-q', '--video-quality', 
+    help='Select video quality 720, 480 (default is 720)',
+    default='720',
+    action='store'
+)
