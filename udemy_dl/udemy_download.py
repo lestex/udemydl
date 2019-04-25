@@ -1,7 +1,6 @@
 from . import __title__
 from .session import session
 from .exceptions import UdemyException
-from .utils import safeencode, unescape
 from .course import Course
 import time
 import logging
@@ -22,6 +21,7 @@ LOGOUT_URL = 'http://www.udemy.com/user/logout'
 COURSE_TITLE_URL = 'https://www.udemy.com/api-2.0/courses/{course_id}?fields[course]=title'
 COURSE_INFO_URL = 'https://www.udemy.com/api-2.0/courses/{course_id}/cached-subscriber-curriculum-items?fields[asset]=@min,title,filename,asset_type,external_url,length&fields[chapter]=@min,description,object_index,title,sort_order&fields[lecture]=@min,object_index,asset,supplementary_assets,sort_order,is_published,is_free&fields[quiz]=@min,object_index,title,sort_order,is_published&page_size=550'
 GET_LECTURE_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}?fields[asset]=@min,download_urls,external_url,slide_urls&fields[course]=id,is_paid,url&fields[lecture]=@default,view_html,course&page_config=ct_v4'
+ATTACHMENT_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}/supplementary-assets/{attachment_id}?fields[asset]=download_urls'
 
 class UdemyDownload(object):
     def __init__(self, course_url, username, password, output_dir, session=session):
@@ -131,40 +131,52 @@ class UdemyDownload(object):
                         lecture_number += 1
                         continue
 
-                    data_list.append({'chapter': chapter,
-                                    'lecture': lecture,
-                                    'data_urls': data_urls,
-                                    'data_type': data_type,
-                                    'lecture_number': int(lecture_number),
-                                    'chapter_number': int(chapter_number)})
+                    attached_list = []
+                    if item.get('supplementary_assets'):
+                        for asset in item['supplementary_assets']:
+                            attached_list.append({
+                                'filename': asset['filename'],
+                                'id': asset['id']
+                            })
+
+                    attached_info = {
+                        'course_id': course_id,
+                        'lecture_id': lecture_id,
+                        'attached_list': attached_list
+                    }
+
+                    data_list.append({
+                        'chapter': chapter,
+                        'lecture': lecture,
+                        'data_urls': data_urls,
+                        'data_type': data_type,
+                        'attached_info': attached_info,
+                        'lecture_number': int(lecture_number),
+                        'chapter_number': int(chapter_number)
+                    })
                 except Exception as e:
                     logger.critical('Cannot download lecture "%s": "%s"', lecture, e)
 
-                lecture_number += 1
-        logger.info('Datalist: %s', data_list)     
+                lecture_number += 1        
         return data_list
 
-    def __extract_lecture_url(self, course_id, lecture_id):        
+    def __extract_lecture_url(self, course_id, lecture_id, quality=None):        
         get_url = GET_LECTURE_URL.format(course_id=course_id, lecture_id=lecture_id)
-        lecture_info = session.get(get_url).json()        
+        lecture_info = session.get(get_url).json()
+        
         if lecture_info['asset']['download_urls']:
             logger.debug('Found Videos in course data - lecture_info')
             dict_videos = {}
             for video in lecture_info['asset']['download_urls']['Video']:
-                dict_videos[video['label']] = video['file']            
-            return (dict_videos, 'Video')
-        else:
+                dict_videos[video['label']] = video['file']
+
+            if quality in ['720', '360']:
+                return (dict_videos[quality], 'Video')
+            else:
+                return (dict_videos, 'Video')
+        else:            
             logger.critical("Couldn't extract lecture url: %s", lecture_id)
             return (None, None)
-
-    # def __parse_video(self, lecture_info, quality='720'):        
-    #     dict_videos = {}
-
-    #     if lecture_info['asset']['download_urls']:
-    #         logger.debug('Found Videos in course data - lecture_info')
-    #         for video in lecture_info['asset']['download_urls']['Video']:
-    #             dict_videos[video['label']] = video['file']        
-    #     return (dict_videos, 'Video')  
 
     def logout(self):
         self.session.get(LOGOUT_URL)
