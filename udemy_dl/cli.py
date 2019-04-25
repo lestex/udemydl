@@ -47,6 +47,7 @@ class Cli:
     def run(self):
         args = vars(self.argparser.parse_args())
 
+        link = args['link']
         username = args['username']
         password = args['password']
         debug = args['debug']
@@ -57,25 +58,31 @@ class Cli:
         if not password:
             password = getpass.getpass()            
 
-        output_folder = os.path.abspath(
-            os.path.expanduser(args['output']) if args['output'] else ''
-        )
-
         sys_information = sys_info()
 
         if debug:
             self.__init_logger(logging.DEBUG)
             self.__generate_sys_info_log(sys_information)
         else:
-            self.__init_logger()        
+            self.__init_logger()
+
+        if args['output']:            
+            output_dest = os.path.normpath(args['output'])            
+        else:
+            course_slug = link.rsplit('/', 1)[1]
+            output_dest = os.path.normpath(course_slug)           
+
+        output_dir = os.path.abspath(output_dest)        
+        logger.debug('Downloading course to: %s', output_dir)
+
         try:
-            with UdemyDownload(args['link'], username, password, output_folder) as ud:                
+            with UdemyDownload(link, username, password, output_dir) as ud:                
                 ud.analyze()
                 ud.download()
         except UdemyException as ue:
             logger.error(ue.args[0])
         except KeyboardInterrupt:
-            logger.error("User interrupted the process, exiting...")
+            logger.error('User interrupted the process, exiting...')
         except Exception as e:
             logger.error('Unknown Exception')
             logger.exception(e)
