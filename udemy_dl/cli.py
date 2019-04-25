@@ -55,7 +55,7 @@ class Cli:
             username = input("Username / Email : ")
 
         if not password:
-            password = getpass.getpass()
+            password = getpass.getpass()            
 
         output_folder = os.path.abspath(
             os.path.expanduser(args['output']) if args['output'] else ''
