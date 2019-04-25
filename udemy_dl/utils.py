@@ -1,5 +1,6 @@
 import platform
 import sys
+#from slugify import slugify, SLUG_OK
 
 def sys_info():
     result = {
