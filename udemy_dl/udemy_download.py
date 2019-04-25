@@ -3,7 +3,6 @@ from .session import session
 from .exceptions import UdemyException
 from .course import Course
 from . import LOGIN_URL, LOGIN_POPUP_URL, LOGOUT_URL
-from .login_helper import login
 import logging
 import re
 
