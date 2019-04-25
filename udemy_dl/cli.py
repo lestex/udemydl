@@ -2,7 +2,7 @@
 from . import __title__
 from .argparser import parser
 from .utils import sys_info
-from .udemy import UdemyDownload
+from .udemy_download import UdemyDownload
 from .exceptions import UdemyException
 import getpass
 import logging
