@@ -20,7 +20,8 @@ parser.add_argument(
 parser.add_argument(
     '-u', '--username',
     help='Username / Email',
-    default=None, action='store'
+    default=None,
+    action='store'
 )
 parser.add_argument(
     '-p', '--password',
@@ -31,5 +32,6 @@ parser.add_argument(
 parser.add_argument(
     '-o', '--output',
     help='Output directory',
-    default=None, action='store'
+    default=None,
+    action='store'
 )
