@@ -22,7 +22,7 @@ u:
 	pip uninstall -y udemydl
 
 clean:
-	@rm -rf build dist udemy_dl.egg-info .pytest_cache
+	@rm -rf build dist *.egg-info .pytest_cache
 
 upload:
 	twine upload  dist/*
