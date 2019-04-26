@@ -1,7 +1,7 @@
-from udemy_dl.cli import Cli
+from udemy_dl.cli import Cli as cli
 
 def main():
-    Cli().run()
+    cli().run()
 
 if __name__ == '__main__':
     main()
