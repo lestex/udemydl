@@ -38,13 +38,6 @@ class Course(object):
 
         return course_id
 
-    def get_course_title(self):
-        course_title_url = COURSE_TITLE_URL.format(course_id=self.course_id)
-        course_title_data = self.session.get(course_title_url).json()
-        course_title = course_title_data['title']
-        logger.debug('Found course title: %s', course_title)
-        return course_title
-
     def get_course_data(self, quality):        
         course_url = COURSE_INFO_URL.format(course_id=self.course_id)
         course_data = self.session.get(course_url).json()
@@ -106,21 +99,22 @@ class Course(object):
                 lecture_number += 1        
         return data_list
 
-    def __extract_lecture_url(self, course_id, lecture_id, quality):        
+    def __extract_lecture_url(self, course_id, lecture_id, quality):
+        """Extracting Video URLs from json_source for type File."""
         get_url = GET_LECTURE_URL.format(course_id=course_id, lecture_id=lecture_id)
-        lecture_info = self.session.get(get_url).json()
+        json_source = self.session.get(get_url).json()
         
         dict_videos = {}
 
-        if lecture_info['asset']['download_urls']:
+        if json_source['asset']['download_urls']:
             logger.debug('Found videos marked as downloadable: %s', lecture_id)
-            for video in lecture_info['asset']['download_urls']['Video']:
+            for video in json_source['asset']['download_urls']['Video']:
                 dict_videos[video['label']] = video['file']
             return (dict_videos[quality], 'Video')
 
-        elif lecture_info['asset']['stream_urls']:
+        elif json_source['asset']['stream_urls']:
             logger.debug('Falling back to stream urls: %s', lecture_id)
-            for video in lecture_info['asset']['stream_urls']['Video']:
+            for video in json_source['asset']['stream_urls']['Video']:
                 dict_videos[video['label']] = video['file']
             return (dict_videos[quality], 'Video')
 
@@ -131,8 +125,8 @@ class Course(object):
     def __parse_file(self, course_id, lecture_id, attachment_id):
         """Extracting URL from json_source for type File."""
         get_url = ATTACHMENT_URL.format(course_id=course_id, lecture_id=lecture_id, attachment_id=attachment_id)
-        file_info = self.session.get(get_url).json()
-        for f in file_info['download_urls']['File']:
+        json_source = self.session.get(get_url).json()
+        for f in json_source['download_urls']['File']:
             if f['label'] == 'download':
                 return f['file']
             else:
