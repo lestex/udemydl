@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-
 import os
 import subprocess
 from setuptools import setup
+from udemy_dl import __version__
 
 requirements = [pkg.split('=')[0] for pkg in open('requirements.txt').readlines()]
 
@@ -19,10 +19,8 @@ classifiers = ['Environment :: Console',
                'Programming Language :: Python :: 3',
                'Topic :: Multimedia :: Video',]
 
-version = open('CHANGES.txt').readlines()[0][1:].strip()
-
 setup(name='udemy-dl',
-      version=version,
+      version=__version__,
       description=description,
       author='Andrey Larin',
       author_email='lestex@gmail.com',
