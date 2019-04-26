@@ -25,7 +25,10 @@ def sys_info():
     return result
 
 def unescape(string):
-    """Replace some characters to special characters"""
+    """Replace some characters to nothing"""
     string = string.replace('/', '')
     string = string.replace('->', '')
+    string = string.replace('(', '')
+    string = string.replace(')', '')
+    string = string.replace(':', '')
     return string
