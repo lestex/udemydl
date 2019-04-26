@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from setuptools import setup
-from udemy_dl import __version__
+from udemy_dl import __version__, __author__, __email__
 import os
 
 requirements = [pkg.split('=')[0] for pkg in open('requirements.txt').readlines()]
@@ -23,8 +23,8 @@ classifiers = ['Environment :: Console',
 setup(name='udemydl',
     version=__version__,
     description=description,
-    author='Andrey Larin',
-    author_email='lestex@gmail.com',
+    author=__author__,
+    author_email=__email__,
     url='https://github.com/lestex/udemy-dl',      
     install_requires=requirements,
     long_description=long_description,
