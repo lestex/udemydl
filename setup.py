@@ -1,18 +1,19 @@
 #!/usr/bin/env python
-import os
-import subprocess
 from setuptools import setup
 from udemy_dl import __version__
+import os
 
 requirements = [pkg.split('=')[0] for pkg in open('requirements.txt').readlines()]
 
 description = 'Download videos from Udemy for personal offline use'
-# try:
-#     subprocess.call(["pandoc", "README.md", "-f", "markdown", "-t", "rst", "-o", "README.rst"])
-#     long_description = open("README.rst").read()
-# except OSError:
-#     print("Pandoc not installed")
-long_description = description
+
+this_directory = os.path.abspath(os.path.dirname(__file__))
+
+try:
+    with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+        long_description = f.read()
+except OSError:
+    print("Couldn't find README.md")
 
 classifiers = ['Environment :: Console',
                'Programming Language :: Python :: 2',
@@ -20,18 +21,19 @@ classifiers = ['Environment :: Console',
                'Topic :: Multimedia :: Video',]
 
 setup(name='udemy-dl',
-      version=__version__,
-      description=description,
-      author='Andrey Larin',
-      author_email='lestex@gmail.com',
-      url='https://github.com/lestex/udemy-dl',      
-      install_requires=requirements,
-      long_description=long_description,
-      packages=['udemy_dl'],
-      classifiers=classifiers,
-      entry_points={
+    version=__version__,
+    description=description,
+    author='Andrey Larin',
+    author_email='lestex@gmail.com',
+    url='https://github.com/lestex/udemy-dl',      
+    install_requires=requirements,
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    packages=['udemy_dl'],
+    classifiers=classifiers,
+    entry_points={
         'console_scripts': [
             '{}=udemy_dl.__main__:main'.format('udemy-dl')
         ]
-      }
-    )
+    }
+)
