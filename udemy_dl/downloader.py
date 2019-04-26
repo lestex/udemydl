@@ -2,6 +2,7 @@ from . import logger
 
 import os
 import subprocess
+import requests
 
 class Downloader():
     def __init__(self, course_data, root_dir):
@@ -41,7 +42,7 @@ class Downloader():
 
     def __get_data(self, directory, link, filename):        
         os.chdir(directory)
-        logger.info('Downloading lecture: %s to directory: %s', filename, directory)
+        logger.info('Downloading lecture: %s', filename)
         self.__curl_dl(link, filename)
 
     def __curl_dl(self, link, filename):

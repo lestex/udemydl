@@ -61,8 +61,7 @@ class UdemyDownload(object):
     def analyze(self):
         logger.info('Analyzing the course ...')
         course = Course(self.course_url, self.session)
-        self.data_links = course.get_course_data(self.quality)        
-        #logger.info('data links: %s', self.data_links)
+        self.data_links = course.get_course_data(self.quality)
 
     def download(self):
         logger.info('Downloading files ...')
