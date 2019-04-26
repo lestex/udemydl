@@ -45,6 +45,7 @@ class Course(object):
 
         lecture_number = 1
         chapter_number = 0
+        item_count = 0
 
         for item in json_source['results']:
             item_count += 1
