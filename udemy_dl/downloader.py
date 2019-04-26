@@ -1,5 +1,5 @@
 from . import logger
-
+from .utils import unescape
 import os
 import subprocess
 import requests
@@ -30,7 +30,7 @@ class Downloader():
             if data['data_type'] == 'Video':
                 link = data['data_urls']
                 filename = '{0:02d} - {1}.mp4'.format(data['lecture_number'], data['lecture'])
-                self.__get_data(directory, link, filename)
+                self.__get_data(directory, link, unescape(filename))
             
             if data['attached_info']['attached_list']:
                 """ Download attachments """                
@@ -38,7 +38,7 @@ class Downloader():
                 for attachment in attachments:
                     link = attachment['link']
                     filename = attachment['filename']
-                    self.__get_data(directory, link, filename)                
+                    self.__get_data(directory, link, unescape(filename))                
 
     def __get_data(self, directory, link, filename):        
         os.chdir(directory)
@@ -54,5 +54,4 @@ class Downloader():
         else:
             command.extend(['--insecure'])
         subprocess.call(command)
-
     

@@ -23,3 +23,8 @@ def sys_info():
         result['os'] = 'Windows - {}'.format(' '.join(win_ver[:2]))
 
     return result
+
+def unescape(string):
+    """Replace some characters to special characters"""
+    string = string.replace('/', ' ')
+    return string
