@@ -1,6 +1,6 @@
 from . import __title__
 from .exceptions import UdemyException
-from . import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL
+from . import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL, ATTACHMENT_URL
 from . import logger
 import re
 
@@ -55,7 +55,7 @@ class Course(object):
 
         lecture_number = 1
         chapter_number = 0
-        item_count = 0.0        
+        item_count = 0.0
 
         for item in course_data['results']:
             item_count += 1
@@ -79,7 +79,8 @@ class Course(object):
                         for asset in item['supplementary_assets']:
                             attached_list.append({
                                 'filename': asset['filename'],
-                                'id': asset['id']
+                                'id': asset['id'],
+                                'link': self.__parse_file(self.course_id, lecture_id, asset['id'])
                             })
 
                     attached_info = {
@@ -117,4 +118,15 @@ class Course(object):
         else:            
             logger.debug("Couldn't extract lecture url: %s", lecture_id)
             return (None, None)
+
+    def __parse_file(self, course_id, lecture_id, attachment_id):
+        """Extracting URL from json_source for type File."""
+        get_url = ATTACHMENT_URL.format(course_id=course_id, lecture_id=lecture_id, attachment_id=attachment_id)
+        file_info = self.session.get(get_url).json()
+        for f in file_info['download_urls']['File']:
+            if f['label'] == 'download':
+                return f['file']
+            else:
+                logger.debug("Skipped. Couldn't fetch File!")
+                return None
     
