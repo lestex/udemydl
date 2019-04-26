@@ -2,6 +2,7 @@ from . import __title__
 from .session import session
 from .exceptions import UdemyException
 from .course import Course
+from .downloader import Downloader
 from . import LOGIN_URL, LOGIN_POPUP_URL, LOGOUT_URL
 from . import logger
 import re
@@ -61,15 +62,10 @@ class UdemyDownload(object):
         logger.info('Analyzing the course ...')
         course = Course(self.course_url, self.session)
         self.data_links = course.get_course_data(self.quality)        
-        logger.info('data links: %s', self.data_links)
+        #logger.info('data links: %s', self.data_links)
 
     def download(self):
         logger.info('Downloading files ...')
+        Downloader(self.data_links, self.output_dir).download()        
         logger.info('Downloaded all files.')
-        for d in self.data_links:
-            logger.info('%s - Chapter: %s ', d['chapter_number'], d['chapter'])
-            logger.info('-- %s Lecture: %s ', d['lecture_number'], d['lecture'])
-            logger.info('---- Lecture link: %s ',d['data_urls'])
-            if d['attached_info']['attached_list']:
-                logger.info('-------- Attachment link: %s ',d['attached_info']['attached_list'])
         
