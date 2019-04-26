@@ -116,7 +116,7 @@ class Course(object):
 
             return (dict_videos[quality], 'Video')
         else:            
-            logger.debug("Couldn't extract lecture url: %s", lecture_id)
+            logger.debug("Couldn't extract lecture url: %s, the lecture might be set as not downloadable", lecture_id)
             return (None, None)
 
     def __parse_file(self, course_id, lecture_id, attachment_id):
