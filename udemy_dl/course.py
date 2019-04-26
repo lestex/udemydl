@@ -1,10 +1,8 @@
 from . import __title__
 from .exceptions import UdemyException
 from . import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL
-import logging
+from . import logger
 import re
-
-logger = logging.getLogger(__title__)
 
 class Course(object):
     def __init__(self, course_link, session):
