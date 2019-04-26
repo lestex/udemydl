@@ -1,32 +1,57 @@
 from . import logger
+
 import os
+import subprocess
 
 class Downloader():
-    def __init__(self, course_data, output_dir):
+    def __init__(self, course_data, root_dir):
         self.course_data = course_data
-        self.output_dir = output_dir
+        self.root_dir = root_dir
 
     def __create_directory(self, dir_name):
-        os.mkdir(dir_name)        
+        try:
+            os.mkdir(dir_name)
+        except FileExistsError:
+            pass
+
 
     def download(self):        
-        self.__create_directory(self.output_dir)
+        self.__create_directory(self.root_dir)
 
-        current_chapter = 1
+        current_chapter = 0
         for data in self.course_data:
             if current_chapter < data['chapter_number']:
-                current_chapter += 1            
-            dir_name = '{0:02d} - {1}'.format(current_chapter, data['chapter'])
-            directory = os.path.join(self.output_dir, dir_name)
-            self.__get_data(directory, data)
+                current_chapter += 1
+                dir_name = '{0:02d} - {1}'.format(current_chapter, data['chapter'])
+                directory = os.path.join(self.root_dir, dir_name)
+                self.__create_directory(directory)
+            
+            if data['data_type'] == 'Video':
+                link = data['data_urls']
+                filename = '{0:02d} - {1}.mp4'.format(data['lecture_number'], data['lecture'])
+                self.__get_data(directory, link, filename)
+            
+            if data['attached_info']['attached_list']:
+                """ Download attachments """                
+                attachments = data['attached_info']['attached_list']
+                for attachment in attachments:
+                    link = attachment['link']
+                    filename = attachment['filename']
+                    self.__get_data(directory, link, filename)                
 
+    def __get_data(self, directory, link, filename):        
+        os.chdir(directory)
+        logger.info('Downloading lecture: %s to directory: %s', filename, directory)
+        self.__curl_dl(link, filename)
 
-    def __get_data(self, directory, data):
-        logger.info('Downloading to directory: %s ', directory)
-        # self.__create_directory(directory)
-        # os.chdir(directory)
-        # # logger.info('-- %s Lecture: %s ', d['lecture_number'], d['lecture'])
-        # # logger.info('---- Lecture link: %s ',d['data_urls'])
-        # # if d['attached_info']['attached_list']:
-        # #     logger.info('-------- Attachment link: %s ',d['attached_info']['attached_list'][0]['link'])
+    def __curl_dl(self, link, filename):
+        command = ['curl', '-C', '-', link, '-o', filename]
+
+        cert_path = requests.certs.where()
+        if cert_path:
+            command.extend(['--cacert', cert_path])
+        else:
+            command.extend(['--insecure'])
+        subprocess.call(command)
+
     
