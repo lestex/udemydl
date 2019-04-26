@@ -3,10 +3,8 @@ from .session import session
 from .exceptions import UdemyException
 from .course import Course
 from . import LOGIN_URL, LOGIN_POPUP_URL, LOGOUT_URL
-import logging
+from . import logger
 import re
-
-logger = logging.getLogger(__title__)
 
 class UdemyDownload(object):
     def __init__(self, course_url, username, password, output_dir, quality):
@@ -16,6 +14,7 @@ class UdemyDownload(object):
         self.output_dir = output_dir
         self.quality = quality
         self.session = session
+        self.data_links = None
     
     def __enter__(self):
         self.login()
@@ -61,9 +60,16 @@ class UdemyDownload(object):
     def analyze(self):
         logger.info('Analyzing the course ...')
         course = Course(self.course_url, self.session)
-        data_links = course.get_course_data(self.quality)        
-        logger.info('data links: %s', data_links)
+        self.data_links = course.get_course_data(self.quality)        
+        logger.info('data links: %s', self.data_links)
 
     def download(self):
-        logger.info('Downloading files ...')        
+        logger.info('Downloading files ...')
         logger.info('Downloaded all files.')
+        for d in self.data_links:
+            logger.info('%s - Chapter: %s ', d['chapter_number'], d['chapter'])
+            logger.info('-- %s Lecture: %s ', d['lecture_number'], d['lecture'])
+            logger.info('---- Lecture link: %s ',d['data_urls'])
+            if d['attached_info']['attached_list']:
+                logger.info('-------- Attachment link: %s ',d['attached_info']['attached_list'])
+        
