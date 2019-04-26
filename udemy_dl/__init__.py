@@ -8,7 +8,7 @@ COURSE_INFO_URL = 'https://www.udemy.com/api-2.0/courses/{course_id}/cached-subs
 GET_LECTURE_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}?fields[lecture]=asset,description,download_url&fields[asset]=asset_type,stream_urls,thumbnail_url,download_urls'
 ATTACHMENT_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}/supplementary-assets/{attachment_id}?fields[asset]=download_urls'
 
-__title__ = 'udemy-dl'
+__title__ = 'udemy_dl'
 __author__ = 'Andrey Larin'
 __email__ = 'lestex@gmail.com'
 __version__ = '0.1.0'

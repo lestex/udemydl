@@ -20,7 +20,7 @@ classifiers = ['Environment :: Console',
                'Programming Language :: Python :: 3',
                'Topic :: Multimedia :: Video',]
 
-setup(name='udemy-dl',
+setup(name='udemydl',
     version=__version__,
     description=description,
     author='Andrey Larin',
@@ -33,7 +33,7 @@ setup(name='udemy-dl',
     classifiers=classifiers,
     entry_points={
         'console_scripts': [
-            '{}=udemy_dl.__main__:main'.format('udemy-dl')
+            '{}=udemy_dl.__main__:main'.format('udemydl')
         ]
     }
 )
