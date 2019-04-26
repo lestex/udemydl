@@ -11,11 +11,7 @@ class Course(object):
         self.course_id = self.__get_course_id(self.course_link)
 
     def __get_course_id(self, course_url):
-        if 'udemy.com/draft/' in course_url:
-            course_id = course_url.split('/')[-1]
-            logger.debug("Found draft...id: %s", course_id)
-            return course_id
-        
+        """Extract course_id from the course page"""
         response = self.session.get(course_url)
         response_text = response.text
 
@@ -40,18 +36,17 @@ class Course(object):
 
     def get_course_data(self, quality):        
         course_url = COURSE_INFO_URL.format(course_id=self.course_id)
-        course_data = self.session.get(course_url).json()
+        json_source = self.session.get(course_url).json()
 
         chapter = None
-        data_list = []
+        course_data = []
         supported_asset_type = ['Video', 'VideoMashup']
         supported_supplementary_assets = ['File']
 
         lecture_number = 1
         chapter_number = 0
-        item_count = 0.0
 
-        for item in course_data['results']:
+        for item in json_source['results']:
             item_count += 1
             lecture = item['title']
             lecture_id = item['id']           
@@ -84,7 +79,7 @@ class Course(object):
                         'attached_list': attached_list
                     }
 
-                    data_list.append({
+                    course_data.append({
                         'chapter': chapter,
                         'lecture': lecture,
                         'data_urls': data_urls,
@@ -97,7 +92,7 @@ class Course(object):
                     logger.debug('Cannot download lecture "%s": "%s"', lecture, e)
 
                 lecture_number += 1        
-        return data_list
+        return course_data
 
     def __extract_lecture_url(self, course_id, lecture_id, quality):
         """Extracting Video URLs from json_source for type File."""
