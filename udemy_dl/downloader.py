@@ -24,7 +24,7 @@ class Downloader():
             if current_chapter < data['chapter_number']:
                 current_chapter += 1
                 dir_name = '{0:02d} - {1}'.format(current_chapter, data['chapter'])
-                directory = os.path.join(self.root_dir, dir_name)
+                directory = os.path.join(self.root_dir, unescape(dir_name))
                 self.__create_directory(directory)
             
             if data['data_type'] == 'Video':
