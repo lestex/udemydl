@@ -1,6 +1,6 @@
 from . import __title__
 from .exceptions import UdemyException
-from . import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL, ATTACHMENT_URL
+from . import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL, ATTACHMENT_URL, GET_LECTURE_URL
 from . import logger
 import re
 
@@ -52,6 +52,7 @@ class Course(object):
         chapter = None
         data_list = []
         supported_asset_type = ['Video', 'VideoMashup']
+        supported_supplementary_assets = ['File']
 
         lecture_number = 1
         chapter_number = 0
@@ -77,11 +78,12 @@ class Course(object):
                     attached_list = []
                     if item.get('supplementary_assets'):
                         for asset in item['supplementary_assets']:
-                            attached_list.append({
-                                'filename': asset['filename'],
-                                'id': asset['id'],
-                                'link': self.__parse_file(self.course_id, lecture_id, asset['id'])
-                            })
+                            if asset['asset_type'] in supported_supplementary_assets:
+                                attached_list.append({
+                                    'filename': asset['filename'],
+                                    'id': asset['id'],
+                                    'link': self.__parse_file(self.course_id, lecture_id, asset['id'])
+                                })
 
                     attached_info = {
                         'course_id': self.course_id,
@@ -108,13 +110,20 @@ class Course(object):
         get_url = GET_LECTURE_URL.format(course_id=course_id, lecture_id=lecture_id)
         lecture_info = self.session.get(get_url).json()
         
+        dict_videos = {}
+
         if lecture_info['asset']['download_urls']:
-            logger.debug('Found videos for lecture: %s', lecture_id)
-            dict_videos = {}
+            logger.debug('Found videos marked as downloadable: %s', lecture_id)
             for video in lecture_info['asset']['download_urls']['Video']:
                 dict_videos[video['label']] = video['file']
-
             return (dict_videos[quality], 'Video')
+
+        elif lecture_info['asset']['stream_urls']:
+            logger.debug('Falling back to stream urls: %s', lecture_id)
+            for video in lecture_info['asset']['stream_urls']['Video']:
+                dict_videos[video['label']] = video['file']
+            return (dict_videos[quality], 'Video')
+
         else:            
             logger.debug("Couldn't extract lecture url: %s, the lecture might be set as not downloadable", lecture_id)
             return (None, None)
