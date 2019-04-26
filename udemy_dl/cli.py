@@ -3,10 +3,9 @@ from .argparser import parser
 from .utils import sys_info
 from .udemy_download import UdemyDownload
 from .exceptions import UdemyException
-import getpass
 import logging
+import getpass
 import os
-import time
 import sys
 
 logger = logging.getLogger(__title__)
