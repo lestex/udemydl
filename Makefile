@@ -2,8 +2,8 @@
 
 default: test
 
-shell:
-	pipenv --python 3.6.4
+env:
+	pipenv --python 3.7.3
 	pipenv shell
 
 install:
