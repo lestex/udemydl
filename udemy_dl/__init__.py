@@ -11,6 +11,6 @@ ATTACHMENT_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{cou
 __title__ = 'udemydl'
 __author__ = 'Andrey Larin'
 __email__ = 'lestex@gmail.com'
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 
 logger = logging.getLogger(__title__)
