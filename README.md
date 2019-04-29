@@ -21,7 +21,7 @@ On Mac it's simple as just running:
 
 or you can clone the repo and install it with `make`
 
-    git clone https://github.com/lestex/udemy-dl
+    git clone https://github.com/lestex/udemydl
     cd udemy-dl &&  make all
 
 ### Usage
