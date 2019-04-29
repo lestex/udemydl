@@ -1,5 +1,5 @@
 import argparse
-from udemy_dl import __title__, __version__
+from udemy_dl import __title__
 
 parser = argparse.ArgumentParser(description='Download courses from Udemy.com', prog=__title__)
 parser.add_argument('--debug', help='Enable debug mode', action='store_const', const=True, default=False)
