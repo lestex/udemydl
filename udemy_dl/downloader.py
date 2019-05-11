@@ -46,7 +46,7 @@ class Downloader():
         self.__curl_dl(link, filename)
 
     def __curl_dl(self, link, filename):
-        command = ['curl', '-C', '-', link, '-o', filename]
+        command = ['curl', '-C', '-', link, '-o', filename, '--progress-bar']
 
         cert_path = requests.certs.where()
         if cert_path:
