@@ -2,10 +2,11 @@
 .DEFAULT_GOAL := help
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+	| awk 'BEGIN {FS = ":.*?## "}; \
+	{printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 env: ## init virtual env
-	pipenv --python 3.7.3
 	pipenv shell
 
 install: ## install dependencies
@@ -27,6 +28,6 @@ clean: ## clean directories
 	@rm -rf build dist *.egg-info .pytest_cache
 
 upload: ## upload package to pypi pypi.org
-	twine upload  dist/*
+	twine upload dist/*
 
-all:	u b i  ## run all
+all: u b i  ## run all
