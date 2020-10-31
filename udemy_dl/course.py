@@ -1,8 +1,8 @@
-from . import __title__
 from .exceptions import UdemyException
-from .utils import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL, ATTACHMENT_URL, GET_LECTURE_URL
+from .utils import COURSE_INFO_URL, ATTACHMENT_URL, GET_LECTURE_URL
 from . import logger
 import re
+
 
 class Course(object):
     def __init__(self, course_link, session):
@@ -34,7 +34,7 @@ class Course(object):
 
         return course_id
 
-    def get_course_data(self, quality):        
+    def get_course_data(self, quality):
         course_url = COURSE_INFO_URL.format(course_id=self.course_id)
         json_source = self.session.get(course_url).json()
 
@@ -56,7 +56,7 @@ class Course(object):
                 chapter = item['title']
                 chapter_number += 1
 
-            elif item['_class'] == 'lecture' and item['asset']['asset_type'] in supported_asset_type:                           
+            elif item['_class'] == 'lecture' and item['asset']['asset_type'] in supported_asset_type:
                 try:
                     data_urls, data_type = self.__extract_lecture_url(self.course_id, lecture_id, quality)
 
@@ -92,7 +92,7 @@ class Course(object):
                 except Exception as e:
                     logger.debug('Cannot download lecture "%s": "%s"', lecture, e)
 
-                lecture_number += 1        
+                lecture_number += 1
         return course_data
 
     def __extract_lecture_url(self, course_id, lecture_id, quality):
@@ -128,4 +128,3 @@ class Course(object):
             else:
                 logger.debug("Skipped. Couldn't fetch File!")
                 return None
-    

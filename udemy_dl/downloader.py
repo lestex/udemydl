@@ -33,14 +33,14 @@ class Downloader():
                 self._get_data(directory, link, unescape(filename))
 
             if data['attached_info']['attached_list']:
-                """ Download attachments """                
+                """ Download attachments """
                 attachments = data['attached_info']['attached_list']
                 for attachment in attachments:
                     link = attachment['link']
                     filename = attachment['filename']
-                    self._get_data(directory, link, unescape(filename))                
+                    self._get_data(directory, link, unescape(filename))
 
-    def _get_data(self, directory, link, filename):        
+    def _get_data(self, directory, link, filename):
         os.chdir(directory)
         logger.info('Downloading lecture: %s', filename)
         self._curl_dl(link, filename)

@@ -15,10 +15,12 @@ try:
 except OSError:
     print("Couldn't find README.md")
 
-classifiers = ['Environment :: Console',
-               'Programming Language :: Python :: 2',
-               'Programming Language :: Python :: 3',
-               'Topic :: Multimedia :: Video',]
+classifiers = [
+    'Environment :: Console',
+    'Programming Language :: Python :: 2',
+    'Programming Language :: Python :: 3',
+    'Topic :: Multimedia :: Video',
+]
 
 setup(
     name='udemydl',
@@ -26,7 +28,7 @@ setup(
     description=description,
     author=__author__,
     author_email=__email__,
-    url='https://github.com/lestex/udemydl',
+    url='https://github.    com/lestex/udemydl',
     install_requires=requirements,
     long_description=long_description,
     long_description_content_type='text/markdown',

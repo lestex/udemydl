@@ -13,7 +13,6 @@ class Session:
         'Connection': 'keep-alive'
     }
 
-
     def __init__(self):
         self.session = requests.sessions.Session()
 
