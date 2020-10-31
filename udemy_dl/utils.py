@@ -1,5 +1,14 @@
 import platform
 import sys
+import distro
+
+LOGIN_URL = 'https://www.udemy.com/join/login-popup/?ref=&display_type=popup&loc'
+LOGOUT_URL = 'http://www.udemy.com/user/logout'
+COURSE_TITLE_URL = 'https://www.udemy.com/api-2.0/courses/{course_id}?fields[course]=title'
+COURSE_INFO_URL = 'https://www.udemy.com/api-2.0/courses/{course_id}/cached-subscriber-curriculum-items?fields[asset]=@min,title,filename,asset_type,external_url,length&fields[chapter]=@min,description,object_index,title,sort_order&fields[lecture]=@min,object_index,asset,supplementary_assets,sort_order,is_published,is_free&fields[quiz]=@min,object_index,title,sort_order,is_published&page_size=550'  # noqa: E501
+GET_LECTURE_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}?fields[lecture]=asset,description,download_url&fields[asset]=asset_type,stream_urls,thumbnail_url,download_urls'  # noqa: E501
+ATTACHMENT_URL = 'https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}/supplementary-assets/{attachment_id}?fields[asset]=download_urls'  # noqa: E501
+
 
 def sys_info():
     result = {
@@ -11,7 +20,7 @@ def sys_info():
         'os': 'Unknown'
     }
 
-    linux_ver = platform.linux_distribution()
+    linux_ver = distro.linux_distribution()
     mac_ver = platform.mac_ver()
     win_ver = platform.win32_ver()
 
@@ -23,6 +32,7 @@ def sys_info():
         result['os'] = 'Windows - {}'.format(' '.join(win_ver[:2]))
 
     return result
+
 
 def unescape(string):
     """Replace some characters to nothing"""

@@ -1,8 +1,8 @@
-from . import __title__
 from .exceptions import UdemyException
-from . import COURSE_TITLE_URL, COURSE_INFO_URL, GET_LECTURE_URL, ATTACHMENT_URL, GET_LECTURE_URL
+from .utils import COURSE_INFO_URL, ATTACHMENT_URL, GET_LECTURE_URL
 from . import logger
 import re
+
 
 class Course(object):
     def __init__(self, course_link, session):
@@ -15,9 +15,9 @@ class Course(object):
         response = self.session.get(course_url)
         response_text = response.text
 
-        if 'data-purpose="take-this-course-button"' in response_text:            
+        if 'data-purpose="take-this-course-button"' in response_text:
             raise UdemyException('You\'re not enrolled in this course')
-        
+
         logger.debug('Searching course id...')
 
         matches = re.search(r'data-course-id="(\d+)"', response_text, re.IGNORECASE)
@@ -34,7 +34,7 @@ class Course(object):
 
         return course_id
 
-    def get_course_data(self, quality):        
+    def get_course_data(self, quality):
         course_url = COURSE_INFO_URL.format(course_id=self.course_id)
         json_source = self.session.get(course_url).json()
 
@@ -50,15 +50,15 @@ class Course(object):
         for item in json_source['results']:
             item_count += 1
             lecture = item['title']
-            lecture_id = item['id']           
+            lecture_id = item['id']
 
-            if item['_class'] == 'chapter':                
+            if item['_class'] == 'chapter':
                 chapter = item['title']
                 chapter_number += 1
 
-            elif item['_class'] == 'lecture' and item['asset']['asset_type'] in supported_asset_type:                           
+            elif item['_class'] == 'lecture' and item['asset']['asset_type'] in supported_asset_type:
                 try:
-                    data_urls, data_type = self.__extract_lecture_url(self.course_id, lecture_id, quality)                   
+                    data_urls, data_type = self.__extract_lecture_url(self.course_id, lecture_id, quality)
 
                     if data_urls is None:
                         lecture_number += 1
@@ -92,14 +92,14 @@ class Course(object):
                 except Exception as e:
                     logger.debug('Cannot download lecture "%s": "%s"', lecture, e)
 
-                lecture_number += 1        
+                lecture_number += 1
         return course_data
 
     def __extract_lecture_url(self, course_id, lecture_id, quality):
         """Extracting Video URLs from json_source for type File."""
         get_url = GET_LECTURE_URL.format(course_id=course_id, lecture_id=lecture_id)
         json_source = self.session.get(get_url).json()
-        
+
         dict_videos = {}
 
         if json_source['asset']['download_urls']:
@@ -114,7 +114,7 @@ class Course(object):
                 dict_videos[video['label']] = video['file']
             return (dict_videos[quality], 'Video')
 
-        else:            
+        else:
             logger.debug("Couldn't extract lecture url: %s, the lecture might be set as not downloadable", lecture_id)
             return (None, None)
 
@@ -128,4 +128,3 @@ class Course(object):
             else:
                 logger.debug("Skipped. Couldn't fetch File!")
                 return None
-    

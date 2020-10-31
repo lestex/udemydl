@@ -1,5 +1,6 @@
 import requests
 
+
 class Session:
     headers = {
         'Host': 'www.udemy.com',
@@ -14,7 +15,7 @@ class Session:
 
     def __init__(self):
         self.session = requests.sessions.Session()
-        
+
     def set_auth_headers(self, access_token, client_id):
         self.headers['Authorization'] = 'Bearer {}'.format(access_token)
 
@@ -23,5 +24,6 @@ class Session:
 
     def post(self, url, data):
         return self.session.post(url, data, headers=self.headers)
+
 
 session = Session()
