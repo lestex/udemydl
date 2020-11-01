@@ -28,7 +28,7 @@ setup(
     description=description,
     author=__author__,
     author_email=__email__,
-    url='https://github.    com/lestex/udemydl',
+    url='https://github.com/lestex/udemydl',
     install_requires=requirements,
     long_description=long_description,
     long_description_content_type='text/markdown',
