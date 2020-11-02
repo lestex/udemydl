@@ -36,7 +36,7 @@ setup(
     classifiers=classifiers,
     entry_points={
         'console_scripts': [
-            '{}=udemy_dl.__main__:main'.format('udemydl')
+            'udemydl=udemy_dl.__main__:main'
         ]
     }
 )
