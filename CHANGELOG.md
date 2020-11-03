@@ -2,6 +2,9 @@
 
 ?.?.?
 ---
+
+0.6.1
+---
 - [Andrey Larin][@lestex] - adds bypass cloudflare protection
 - [Andrey Larin][@lestex] - minor refactoring
 
