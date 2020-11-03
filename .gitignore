@@ -115,5 +115,6 @@ dmypy.json
 .pyre/
 
 # ide
+.idea
 .vscode
 .DS_Store
