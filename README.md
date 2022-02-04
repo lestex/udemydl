@@ -1,5 +1,9 @@
 ## A Python script to download lectures from udemy.com.
 
+## Warning
+**Udemy has started to encrypt many of the course videos, so downloading them may be impossible/illegal because it involves decrypting DRM'd videos which opens up the author to DMCA takedowns/lawsuits.**
+This repo is read-only now.
+
 ### Prerequisites
 
 * Python (2 or 3)
